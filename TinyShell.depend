@@ -1,0 +1,156 @@
+# depslib dependency file v1.0
+1488210441 source:c:\users\dell\desktop\windows_c\tinyshell\datetime.c
+	"DateTime.h"
+	"TinyShell.h"
+	<windows.h>
+	<stdio.h>
+	<ctype.h>
+
+1487758370 
+
+1488206439 c:\users\dell\desktop\windows_c\tinyshell\datetime.h
+	<windows.h>
+
+1488579284 source:c:\users\dell\desktop\windows_c\tinyshell\directory.c
+	<string.h>
+	<tchar.h>
+	<windows.h>
+	<stdlib.h>
+	<stdio.h>
+
+1488097597 >
+
+1488540973 source:c:\users\dell\desktop\windows_c\tinyshell\process.c
+	"Process.h"
+	<stdio.h>
+	<string.h>
+	<psapi.h>
+	<windows.h>
+
+1488538615 c:\users\dell\desktop\windows_c\tinyshell\process.h
+	<windows.h>
+
+1488590692 source:c:\users\dell\desktop\windows_c\tinyshell\tinyshell.c
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<shlwapi.h>
+	"TinyShell.h"
+	"DateTime.h"
+	"Directory.h"
+	"Process.h"
+	"Path.h"
+	<string.h>
+	<ctype.h>
+
+1488100581 "
+
+1487758370 source:/media/microsoft/8A7E43AC7E438FBD/Users/Dell/Desktop/Windows_C/TinyShell/DateTime.c
+	"DateTime.h"
+	<windows.h>
+	<stdio.h>
+
+1487751743 /media/microsoft/8A7E43AC7E438FBD/Users/Dell/Desktop/Windows_C/TinyShell/DateTime.h
+
+1488100581 source:/media/microsoft/8A7E43AC7E438FBD/Users/Dell/Desktop/Windows_C/TinyShell/Directory.c
+	<stdio.h>
+	<string.h>
+	<tchar.h>
+	<windows.h>
+
+1488097682 source:/media/microsoft/8A7E43AC7E438FBD/Users/Dell/Desktop/Windows_C/TinyShell/Process.c
+	"Process.h"
+	<stdio.h>
+	<string.h>
+	<psapi.h>
+	<windows.h>
+
+1488167144 /media/microsoft/8A7E43AC7E438FBD/Users/Dell/Desktop/Windows_C/TinyShell/Process.h
+	<windows.h>
+
+1488100581 source:/media/microsoft/8A7E43AC7E438FBD/Users/Dell/Desktop/Windows_C/TinyShell/TinyShell.c
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	"Process.h"
+
+1488347573 c:\users\dell\desktop\windows_c\tinyshell\tinyshell.h
+	<stdio.h>
+	<string.h>
+	"Process.h"
+
+1488347573 source:c:\users\dell\desktop\windows_c\tinyshell\main.c
+	"TinyShell.h"
+	<string.h>
+	<Windows.h>
+	<shlwapi.h>
+
+1488350891 c:\users\dell\desktop\windows_c\tinyshell\directory.h
+
+1488590063 source:c:\users\dell\desktop\windows_c\tinyshell\path.c
+	"Path.h"
+	<windows.h>
+	<stdio.h>
+	<tchar.h>
+
+1488590322 c:\users\dell\desktop\windows_c\tinyshell\path.h
+
+1488210441 source:c:\users\dell\desktop\windows_c\tinyshellÁ\datetime.c
+	"DateTime.h"
+	"TinyShell.h"
+	<windows.h>
+	<stdio.h>
+	<ctype.h>
+
+1488206439 c:\users\dell\desktop\windows_c\tinyshellÁ\datetime.h
+	<windows.h>
+
+1488207114 c:\users\dell\desktop\windows_c\tinyshellÁ\tinyshell.h
+	<stdio.h>
+	<string.h>
+
+1488207192 source:c:\users\dell\desktop\windows_c\tinyshellÁ\directory.c
+	<stdio.h>
+	<string.h>
+	<tchar.h>
+	<windows.h>
+
+1488215498 source:c:\users\dell\desktop\windows_c\tinyshellÁ\main.c
+	"TinyShell.h"
+	"DateTime.h"
+	"Directory.h"
+	"Process.h"
+	<string.h>
+	<shlwapi.h>
+	<Windows.h>
+
+1488206157 c:\users\dell\desktop\windows_c\tinyshellÁ\directory.h
+
+1488206655 c:\users\dell\desktop\windows_c\tinyshellÁ\process.h
+	<windows.h>
+
+1488177772 source:c:\users\dell\desktop\windows_c\tinyshellÁ\path.c
+	"Path.h"
+	<windows.h>
+	<stdio.h>
+
+1488167333 c:\users\dell\desktop\windows_c\tinyshellÁ\path.h
+
+1488207005 source:c:\users\dell\desktop\windows_c\tinyshellÁ\process.c
+	"Process.h"
+	<stdio.h>
+	<string.h>
+	<psapi.h>
+	<windows.h>
+
+1488207114 source:c:\users\dell\desktop\windows_c\tinyshellÁ\tinyshell.c
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	"Process.h"
+	<string.h>
+	<ctype.h>
+
