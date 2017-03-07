@@ -4,48 +4,51 @@
 #include <psapi.h>
 #include <windows.h>
 
+PROCESS_INFORMATION copy_pi;
+
 BOOL CtrlHandler(DWORD fdwCtrlType)
 {
     switch( fdwCtrlType ){
         case CTRL_C_EVENT:
-            return( TRUE );
+            TerminateProcess(copy_pi.hProcess, 0);
+            CloseHandle(copy_pi.hProcess);
+            CloseHandle(copy_pi.hThread);
+            return TRUE;
         default:
             return FALSE;
     }
 }
 
-int modeBackground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, const char* nameProgram,
+int modeBackground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr,
                    char* commandlineArguments)
 {
-    return CreateProcess(nameProgram, commandlineArguments, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, si_ptr, pi_ptr);
+    return CreateProcess(NULL, commandlineArguments, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, si_ptr, pi_ptr);
 }
 
-int modeForeground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, const char* nameProgram,
+int modeForeground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr,
                    char* commandlineArguments)
 {
     int flag = 0;
-    flag = CreateProcess(nameProgram, commandlineArguments, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, si_ptr, pi_ptr);
+    flag = CreateProcess(NULL, commandlineArguments, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, si_ptr, pi_ptr);
     if(flag) {
-        HANDLE hprocess = pi_ptr->hProcess;
+        HANDLE hProcess = pi_ptr->hProcess;
+        copy_pi = *pi_ptr;
         SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE );
-        WaitForSingleObject(hprocess, INFINITE);
-        TerminateProcess(hprocess, 0);
-        CloseHandle(hprocess);
-        CloseHandle(pi_ptr->hThread);
+        WaitForSingleObject(hProcess, INFINITE);
         return 1;
     } else
         return 0;
 }
 
-PROCESS_INFORMATION createProcess(const char* nameProgram, char* commandlineArguments,
-                                  int (*modeProcess)(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, const char* nameProgram, char* commandlineArguments))
+PROCESS_INFORMATION createProcess(char* commandlineArguments,
+                                  int (*modeProcess)(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, char* commandlineArguments))
 {
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
     ZeroMemory(&si, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
 
-    if(!modeProcess(&si, &pi, nameProgram, commandlineArguments)) {
+    if(!modeProcess(&si, &pi, commandlineArguments)) {
         printf("Create process failed");
         exit(1);
     }

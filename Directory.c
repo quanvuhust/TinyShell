@@ -1,13 +1,13 @@
 #include <string.h>
-#include <tchar.h>
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
 #define ZERO '0'
+#define MAX_DIGIT_OF_LONG_LONG 30
 void longlongToChar(long long Number, char *Destination)
 {
     int i = 0, j = 0;
-    char numberChar[30];
+    char numberChar[MAX_DIGIT_OF_LONG_LONG + 1];
     while(Number != 0){
         numberChar[i++] = (Number%10) + ZERO;
         Number /= 10;
@@ -47,8 +47,8 @@ void dir(int argc, char *argv[])
     long long sumSizeFile = 0;
     WIN32_FIND_DATA ffd;
     LARGE_INTEGER filesize;
-    TCHAR curDirectoryPath[MAX_PATH];
-    TCHAR szDir[MAX_PATH];
+    char curDirectoryPath[MAX_PATH];
+    char szDir[MAX_PATH];
     SYSTEMTIME sysTime;
     GetCurrentDirectory(MAX_PATH, curDirectoryPath);
     strcpy(szDir, curDirectoryPath);
@@ -62,7 +62,7 @@ void dir(int argc, char *argv[])
         FileTimeToSystemTime(&ffd.ftCreationTime, &sysTime);
         if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
             countDir++;
-            _tprintf(TEXT("%02u/%02u/%04u  %02u:%02u    <DIR>%-10s %s\n"),sysTime.wDay, sysTime.wMonth,
+            printf("%02u/%02u/%04u  %02u:%02u    <DIR>%-10s %s\n",sysTime.wDay, sysTime.wMonth,
                                                                           sysTime.wYear, sysTime.wHour, sysTime.wMinute,
                                                                           " ", ffd.cFileName);
         } else {
@@ -71,7 +71,7 @@ void dir(int argc, char *argv[])
             filesize.HighPart = ffd.nFileSizeHigh;
             sumSizeFile += filesize.QuadPart;
             addCommaToLong(filesize.QuadPart, numberChar);
-            _tprintf(TEXT("%02u/%02u/%04u  %02u:%02u         %-10s %s\n"),sysTime.wDay, sysTime.wMonth, sysTime.wYear,
+            printf("%02u/%02u/%04u  %02u:%02u         %-10s %s\n",sysTime.wDay, sysTime.wMonth, sysTime.wYear,
                                                                             sysTime.wHour, sysTime.wMinute, numberChar,
                                                                             ffd.cFileName);
         }

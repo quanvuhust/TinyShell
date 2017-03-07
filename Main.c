@@ -4,9 +4,10 @@
 #include <shlwapi.h>
 int main ()
 {
-    char string[MAX_PATH], Command[MAX_SIZE_COMMAND], argumentCommandlines[MAX_PATH];
+    char string[MAX_PATH], argumentCommandlines[MAX_PATH];
     ProcessTable prtable;
     ZeroMemory(&prtable, sizeof(prtable));
+    printf("%s\n", PathFindExtension("Test"));
     printf("Shell: Version [1.02.270217] \n");
     printf("(c) 2016 My Corporation. All rights reserved.\n\n");
     do {
@@ -20,16 +21,15 @@ int main ()
         if(string[0] == '\0')
             continue;
         getArgc_Argv_For_Command(&argcCommand, &argvCommand, string);
-        strcpy(Command, argvCommand[0]);
 
-        if(!isBatFile(Command))
-            strcat(Command, ".bat");
-        if(PathFileExists(Command)){
-            exeBatFile(&prtable, Command, argcCommand, argvCommand, argumentCommandlines);
+        if(!isBatFile(argvCommand[0]))
+            strcat(argvCommand[0], ".bat");
+        if(PathFileExists(argvCommand[0])){
+            exeBatFile(&prtable, argcCommand, argvCommand, argumentCommandlines);
         }
         else {
-            Command[strlen(Command) - 4] = '\0';
-            exeCommand(&prtable, Command, argcCommand, argvCommand, argumentCommandlines);
+            argvCommand[0][strlen(argvCommand[0]) - 4] = '\0';
+            exeCommand(&prtable, argcCommand, argvCommand, argumentCommandlines);
         }
 
         deleteArgvCommand(argcCommand, argvCommand);

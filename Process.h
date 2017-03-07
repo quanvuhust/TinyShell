@@ -13,14 +13,14 @@ typedef struct ProcessTable
     DWORD NumberProcess;
 }ProcessTable;
 
-int modeBackground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, const char* nameProgram,
+int modeBackground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr,
                    char* commandlineArguments);
 
-int modeForeground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, const char* nameProgram,
+int modeForeground(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr,
                    char* commandlineArguments);
 
-PROCESS_INFORMATION createProcess(const char* nameProgram, char* commandlineArguments,
-                                  int (*modeProcess)(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, const char* nameProgram, char* commandlineArguments));
+PROCESS_INFORMATION createProcess(char* commandlineArguments,
+                                  int (*modeProcess)(STARTUPINFO *si_ptr, PROCESS_INFORMATION *pi_ptr, char* commandlineArguments));
 
 int checkStatusThread(HANDLE hThread);
 void deleteElement(PROCESS_INFORMATION table[], int position, int len);

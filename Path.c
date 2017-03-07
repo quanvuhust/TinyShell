@@ -2,19 +2,17 @@
 #include <windows.h>
 #include <stdio.h>
 #include <tchar.h>
+#include <shlwapi.h>
 void Path()
 {
     LPTSTR lpszVariable;
     LPTCH lpvEnv;
-    // Get a pointer to the environment block.
     lpvEnv = GetEnvironmentStrings();
-    // If the returned pointer is NULL, exit.
     if (lpvEnv == NULL){
         printf("GetEnvironmentStrings failed (%d)\n", GetLastError());
         return;
     }
-    // Variable strings are separated by NULL byte, and the block is
-    // terminated by a NULL byte.
+
     lpszVariable = (LPTSTR) lpvEnv;
     printf("\n");
     while (*lpszVariable){

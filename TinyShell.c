@@ -84,6 +84,33 @@ int BinarySearch (const char *a[], unsigned size, char *s)
     return -1;
 }
 
+BOOL exeExists(char *filename)
+{
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
+
+    if(!CreateProcess( NULL,   // No module name (use command line)
+        filename,        // Command line
+        NULL,           // Process handle not inheritable
+        NULL,           // Thread handle not inheritable
+        FALSE,          // Set handle inheritance to FALSE
+        0,              // No creation flags
+        NULL,           // Use parent's environment block
+        NULL,           // Use parent's starting directory
+        &si,            // Pointer to STARTUPINFO structure
+        &pi )           // Pointer to PROCESS_INFORMATION structure
+    )
+        return 0;
+    TerminateProcess(pi.hProcess, 0);
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+    return 1;
+}
+
 void printCurrentDirectory(void)
 {
     char curDirectoryPath[MAX_PATH];
@@ -158,6 +185,7 @@ void normalizedString(char *str)
 
 void getArgc_Argv_For_Command(int *argc_ptr, char ***argv_ptr, char *Source)
 {
+
     int i, countSpace = 0, len = strlen(Source);
     for(i = 0; i < len; i++)
         if(Source[i] == SPACE)
@@ -168,7 +196,7 @@ void getArgc_Argv_For_Command(int *argc_ptr, char ***argv_ptr, char *Source)
     int j = *argc_ptr - 1;
     for(i = len - 1; i >= 0; i--) {
         if(i == 0) {
-            (*argv_ptr)[0] = (char *)malloc((strlen(Source) + 1)*sizeof(char));
+            (*argv_ptr)[0] = (char *)malloc((strlen(Source) + 1 + 4)*sizeof(char));//To add ".bat" to end argv[0]
             strcpy((*argv_ptr)[0], Source);
         }
 
@@ -188,20 +216,6 @@ void deleteArgvCommand(int argcCommand, char **argvCommand)
     free(argvCommand);
 }
 
-int isExeFile(char *Command)
-{
-    int i;
-    for(i = strlen(Command) - 1; i >= 0; i--)
-        if(Command[i] == '.')
-            break;
-    if(i == 0)
-        return 0;
-    else if(!strcmp(Command + i, ".exe"))
-        return 1;
-    else
-        return 0;
-}
-
 int isBatFile(char *Command)
 {
     int i;
@@ -216,103 +230,100 @@ int isBatFile(char *Command)
         return 0;
 }
 
-void exeCommand(ProcessTable *prtable_ptr, char *Command, int argcCommand, char *argvCommand[], char *argumentCommandlines)
+void exeCommand(ProcessTable *prtable_ptr, int argcCommand, char *argvCommand[], char *argumentCommandlines)
 {
     int commandIndex, i;
 
     /*Tim kiem cau lenh nhap vao co ton tai hay khong*/
     for(i = 0; i < NUMBER_KIND_COMMANDS; i++) {
-        commandIndex = BinarySearch (COMMANDS[i], sizeKindCommands[i], Command);
+        commandIndex = BinarySearch (COMMANDS[i], sizeKindCommands[i], argvCommand[0]);
         if(commandIndex != -1)
             break;
     }
     if(commandIndex != -1) {
         switch(i) {
-        case KIND_DATETIME_COMMANDS: {
-            switch(commandIndex) {
-            case DATES:
-                dateCommand(argcCommand);
-                break;
-            case TIMES:
-                timeCommand(argcCommand);
-                break;
-            }
-            break;
-        }
-        case KIND_DIRECTORY_COMMANDS: {
-            switch(commandIndex) {
-            case DIR:
-                dir(argcCommand, argvCommand);
+            case KIND_DATETIME_COMMANDS: {
+                switch(commandIndex) {
+                    case DATES:
+                        dateCommand(argcCommand);
+                        break;
+                    case TIMES:
+                        timeCommand(argcCommand);
+                        break;
+                }
                 break;
             }
-            break;
-        }
-        case KIND_ENVIRONMENT_COMMANDS: {
-            switch(commandIndex) {
-            case PATH:
-                Path();
+            case KIND_DIRECTORY_COMMANDS: {
+                switch(commandIndex) {
+                    case DIR:
+                        dir(argcCommand, argvCommand);
+                        break;
+                    }
                 break;
+            }
+            case KIND_ENVIRONMENT_COMMANDS: {
+                switch(commandIndex) {
+                    case PATH:
+                        Path();
+                        break;
 
-            case ADDPATH:
-                addPath(argcCommand, argvCommand);
+                    case ADDPATH:
+                        addPath(argcCommand, argvCommand);
+                        break;
+                }
                 break;
             }
-            break;
-        }
-        case KIND_PROCESS_COMMANDS: {
-            switch(commandIndex) {
-            case KILL:
-                killProcess(argcCommand, argvCommand, prtable_ptr);//Truyen argvCommand vao khong truyen atoi
-                break;
+            case KIND_PROCESS_COMMANDS: {
+                switch(commandIndex) {
+                    case KILL:
+                        killProcess(argcCommand, argvCommand, prtable_ptr);//Truyen argvCommand vao khong truyen atoi
+                        break;
 
-            case LIST:
-                listProcess(argcCommand, *prtable_ptr);
-                break;
-            case RESUME:
-                resumeProcess(argcCommand, argvCommand, *prtable_ptr);
-                break;
-            case STOP:
-                stopProcess(argcCommand, argvCommand, *prtable_ptr);
-                break;
-            }
-            break;
-        }
-        case KIND_SHELL_COMMANDS: {
-            switch(commandIndex) {
-            case HELP:
-                helpShell(argcCommand);
-                break;
-            case EXIT:
-                exitShell(argcCommand);
+                    case LIST:
+                        listProcess(argcCommand, *prtable_ptr);
+                        break;
+                    case RESUME:
+                        resumeProcess(argcCommand, argvCommand, *prtable_ptr);
+                        break;
+                    case STOP:
+                        stopProcess(argcCommand, argvCommand, *prtable_ptr);
+                        break;
+                }
                 break;
             }
-            break;
-        }
+            case KIND_SHELL_COMMANDS: {
+                switch(commandIndex) {
+                    case HELP:
+                        helpShell(argcCommand);
+                        break;
+                    case EXIT:
+                        exitShell(argcCommand);
+                        break;
+                }
+                break;
+            }
         }
     } else {
-        if(!isExeFile(Command))
-            strcat(Command, ".exe");
-        if(PathFileExists(Command)) {
+        if(exeExists(argvCommand[0])) {
             if(!strcmp(argvCommand[argcCommand - 1], "&")) {
                 argumentCommandlines[strlen(argumentCommandlines) - 2] = '\0';
-                prtable_ptr->Table[prtable_ptr->NumberProcess++] = createProcess(Command, argumentCommandlines, &modeBackground);
+                prtable_ptr->Table[prtable_ptr->NumberProcess++] = createProcess(argumentCommandlines, &modeBackground);
             } else {
-                createProcess(Command, argumentCommandlines, &modeForeground);
+                createProcess(argumentCommandlines, &modeForeground);
                 printf("\n");
             }
-        } else {
-            Command[strlen(Command) - 4] = '\0';
-            printf("\'%s\' is not recognized as an internal or external command, operable program or batch file.\n", Command);
         }
+        else
+            printf("\'%s\' is not recognized as an internal or external command, operable program or batch file.\n", argvCommand[0]);
     }
 }
 
-void exeBatFile(ProcessTable *prtable_ptr, char *Command, int argcCommand, char *argvCommand[], char *argumentCommandlines)
+void exeBatFile(ProcessTable *prtable_ptr, int argcCommand, char *argvCommand[], char *argumentCommandlines)
 {
     FILE *f;
-    f = fopen(Command, "rt");
+    f = fopen(argvCommand[0], "rt");
     if(f == NULL) {
-        printf("Can't execute %s.\n", Command);
+        printf("Can't execute %s.\n", argvCommand[0]);
     } else {
         char commandOfBat[MAX_PATH];
         while(!feof(f)) {
@@ -325,8 +336,8 @@ void exeBatFile(ProcessTable *prtable_ptr, char *Command, int argcCommand, char 
             if(commandOfBat[0] == '\0')
                 continue;
             getArgc_Argv_For_Command(&argcCommand, &argvCommand, commandOfBat);
-            strcpy(Command, argvCommand[0]);
-            exeCommand(prtable_ptr, Command, argcCommand, argvCommand, argumentCommandlines);
+            strcpy(argvCommand[0], argvCommand[0]);
+            exeCommand(prtable_ptr, argcCommand, argvCommand, argumentCommandlines);
         }
         fclose(f);
     }
